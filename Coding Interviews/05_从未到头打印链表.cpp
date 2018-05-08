@@ -20,7 +20,7 @@ void CreateList(ListNode *l,int n)
         p=(ListNode*)malloc(sizeof(ListNode));
         p->val=m;
         p->next=rear->next;
-        rear=p;
+        rear->next=p;
         rear=p;
     }
 }
@@ -30,8 +30,9 @@ void printListFromTailToHead(ListNode* head)
     if(head!=NULL)
     {
         printListFromTailToHead(head->next);
+        printf("%d ",head->val);
     }
-    printf("%d ",head->val);
+
 }
 
 void printListFromTail(ListNode *l)
@@ -42,7 +43,7 @@ void printListFromTail(ListNode *l)
         s.push(l->val);
         l=l->next;
     }
-    while(s.empty()==true)
+    while(s.empty()!=true)
     {
         int b=s.top();
         s.pop();
@@ -59,8 +60,8 @@ int main()
     scanf("%d",&m);
     l->val=m;
     l->next=NULL;
-    CreateList(l->next,n);
-    // printListFromTailToHead(l);
+    CreateList(l,n);
+    //printListFromTailToHead(l);
     printListFromTail(l);
     return 0;
 }
