@@ -30,8 +30,8 @@ void printListFromTailToHead(ListNode* head)
     if(head!=NULL)
     {
         printListFromTailToHead(head->next);
-        printf("%d ",head->val);
     }
+    printf("%d ",head->val);
 }
 
 void printListFromTail(ListNode *l)
@@ -60,7 +60,7 @@ int main()
     l->val=m;
     l->next=NULL;
     CreateList(l->next,n);
-//    printListFromTailToHead(l);
+    // printListFromTailToHead(l);
     printListFromTail(l);
     return 0;
 }
