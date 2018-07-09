@@ -95,10 +95,10 @@ f(n)=$\sum_{i=1}^{n-1}f(i)+1=2^{n-1}$
 用$2\times1$的的矩阵覆盖$2\times8$的种类
 
 其实这也是一个斐波拉契数列。
+ 
+先拼2 * 1和 2 * 2，再在此基础上拼凑。
 
-先拼$2\times1$和$2\times2$，再在此基础上拼凑。
-
-所以递推公式为$f(n)=f(n-1)+f(n-1)$
+所以递推公式为f(n)=f(n-1)+f(n-1)
 
 ## 面试题10 二进制中1的个数
 
@@ -186,24 +186,208 @@ f(n)=$\sum_{i=1}^{n-1}f(i)+1=2^{n-1}$
 
 回溯法
 
-
 ## 面试题26 复杂链表的复制
 
 ![](https://ws1.sinaimg.cn/large/005BVyzmgy1ft2pl1p0zcj30d10530t5.jpg)
 
 首先复制，链表的结点，和不同链表一样，然后复制random指针。最后将两条链表分开。
 
-## 面试题27 
+![](https://ws1.sinaimg.cn/large/005BVyzmgy1ft3dhgukadj30kv0d1dg7.jpg)
+
+![](https://ws1.sinaimg.cn/large/005BVyzmgy1ft3dhipp6gj30k40cit91.jpg)
+
+
+## 面试题27 二叉搜索树和双向链表
+
+![](https://ws1.sinaimg.cn/large/005BVyzmgy1ft3dzy2pm3j30l7058jrx.jpg)
+
+采用中序遍历到结点4，pLastNodeList保存的是上一个结点，当pCurrent遍历到4时，pLastNodeList指向NULL，当pCurrent指向6时，pLastNodeList指向4，然后建立链表的双向链接，紧接着pCurrent指向8时，pLastNodeList指向6，然后pCurrent指向10，pLastNodeList指向8.总之就是每次都指向前面一个。
+
+    void ConvertNode(TreeNode *pNode,TreeNode **pLastNodeinList)
+    {
+        if(pNode)
+        {
+            TreeNode *pCurrent=pNode;
+            if(pCurrent->left!=NULL)
+                ConvertNode(pCurrent->left,pLastNodeinList);
+            pCurrent->left=*pLastNodeinList;
+            if(*pLastNodeinList!=NULL)
+                (*pLastNodeinList)->right=pCurrent;
+            *pLastNodeinList=pCurrent;
+            if(pCurrent->right!=NULL)
+                ConvertNode(pCurrent->right,pLastNodeinList);
+        }
+    }
+
+## 面试题28 字符串的全排列
+
+回溯法
+
+## 面试题29 数组中出现次数超过一半的数字
+
+基于Partition的O(n)算法
+
+超过一半，那么如果排好序，中间位置一定是出现次数最多的数。所以可以借鉴partition方法，寻找mid。不断地寻找index直到index=mid。
+
+## 面试题30
+
+和面试题29的方法一样，使index=k-1。这样左边每一个都比它小。因此前面k个即为最小的k个结点。
+
+## 面试题31 连续子数组的最大和
+
+输入一个数组，里面有正数也有负数，求中间连续序列的最大和。
+
+动态规划：根据最大序列的特点，第一个序列肯定大于等于0。如果连续序列和小于0，那么说明前面一段可以放弃。形式化公式如下：
+
+f(i)=data[i]; //f(i-1)<=0或者i=0
+f(i)=f(i-1)+data[i]//i!=0或者f(i-1)>0
+
+## 面试题32 整数中出现1的次数
+
+常规方法：除以10取余
+
+改进方法：？
+
+## 面试题 33 丑数
+
+对于数字中只包含2,3,5的数我们称之为丑数。
+
+思路一：暴力求解。直接从头到尾遍历
+
+思路二：借助数组保存前面的数。关系式如下面伪代码
+
+    int nextUglyIndex=1;
+    int *pMultiply2=pUglyNumbers;
+    int *pMultiply3=pUglyNumbers;
+    int *pMultiply5=pUglyNumbers;
+
+    while(nextUglyIndex<index)
+    {
+        int min = Min(*pMultiply2*2,*pMultiply3*3,*pMultiply5*5);
+        pUglyNumbers[nextUglyIndex]=min;
+
+        while(*pMultiply2*2<=pUglyNumbers[nextUglyIndex])
+            ++pMultiply2;
+        while(*pMultiply3*3<=pUglyNumbers[nextUglyIndex])
+            ++pMultiply3;
+        while(*pMultiply5*5<=pUglyNumbers[nextUglyIndex])
+            ++pMultiply5;
+
+        ++nextUglyIndex;
+    }
+
+## 面试题35 数组中第一次出现的字符
+
+采用hash表，统计每一个此处出现的次数然后，遍历hash，返回输出次数为1的表。
+
+## 面试37 两个链表中的公共节点
+
+首先一次求出两个链表的长度，然后计算出长度差d，让较长的链表的指针先移动n步。然后两个同时移动，两个链表第一次相等的结点即为公共节点的起始点。
+
+## 面试题39 二叉树的深度
+
+递归遍历，经典。需要熟记。
+
+    int TreeDepth(TreeNode* pRoot)
+    {
+        int ldepth,rdepth;
+        if(pRoot==NULL)
+            return 0;
+        ldepth = TreeDepth(pRoot->left)+1;
+        rdepth = TreeDepth(pRoot->right)+1;
+        return ldepth > rdepth?ldepth:rdepth;    
+    }
+
+    /*
+    判断是否为平衡二叉树，平衡二叉树要求每一个结点的高度差不超过1
+    */
+
+    bool IsBalanced(TreeNode *pRoot)
+    {
+        if(pRoot==NULL)
+            return true;
+
+        int left=TreeDepth(pRoot->left);
+        int right=TreeDepth(pRoot->right);
+        int diff=left-right;
+        if(diff>1||diff<-1)
+            return false;
+
+        return IsBalanced(pRoot->left)&&IsBalanced(pRoot->right);
+    }
+
+## 面试题40 数组中只出现一次的数字
+
+一个整形数组中包含两个单独的数，其他的都是成对出现。
+
+对于两个相同的数，其异或的值为0。
+
+所以从头到尾一次异或数组中的数据，最后会得到一个不为0的数，即两个不成对的数的异或值，然后求出二进制异或值第一个不为0的位数，然后按照该位0~1分为两组，最后将两组分别进行异或操作最后得到的值即为两个单独的数。
+
+## 面试题41 和为s的连续正序列
+
+### 和为s的两个数字
+
+输入一个递增排序的数组和数字s，在数组中查找两个数字，使得其和刚好等于s。
+
+选择两个指针，分别指向数组头和尾，如果和大于s，尾指针向左移，否则头指针向右移。
+
+## 和为s的序列
+
+设置两个指针small和big。分别指向第一个位置和第二个位置。如果序列和小于s，big指针向后移，如果大于s，small指针向后移。最后得到序列。
+
+## 面试题42 字符串翻转
+
+## 面试题45 约瑟夫环
+
+基础题，循环数组。
+
+## 面试题46 1+2+3+...+n
+
+利用构造函数
+
+## 面试题47 不用加减乘除做加法
+
+采用位运算
+
+- 首先，异或计算求相加之后的值
+- 然后与运算并且左移，计算进位
+- 最后没有前面重复前面两步的操作，直到进位为0
+
+伪代码
+
+
+    int Add(int num1,int num2)
+    {
+        int sum,carry;
+        do
+        {
+            sum=num1^num2;
+            carry=(num1&num2)<<1;//求进位
+            num1=sum;
+            num2=carry;
+
+        }while(num2!=0);
+        return num1;
+    }
+
+## 面试题51 数组中重复的数字
+
+
+
+## 面试题52 构建乘积数组
+
+![](https://ws1.sinaimg.cn/large/005BVyzmgy1ft3ye9e801j30lz03jjti.jpg)
+
+![](https://ws1.sinaimg.cn/large/005BVyzmgy1ft3yd60zbfj30ge0apdhk.jpg)
+
+## 面试题53 正则匹配
 
 ## 面试题56 链表中环的入口结点
 
 思路：首先判断是否含有环，然后根据根据相关公式计算出入口节点。
 
 具体做法首先设置两个指针，一个快指针和一个慢指针。快指针的速度为慢指针的速度的两倍，因此当他们能够相遇时，则存在入口节点，如果不能相遇，则不存在环。如果存在，则有下面的关系式。<font color=red>当找到相遇结点的时候，再将快速指针放到头结点，当两个同时再次相遇的时候，则会在环的入口处相遇</font>。[推导过程](https://blog.csdn.net/snow_7/article/details/52181049)
-
-
-
-
 
 ## 面试题58 二叉树下的一个结点
 
@@ -219,8 +403,7 @@ f(n)=$\sum_{i=1}^{n-1}f(i)+1=2^{n-1}$
 
 ## 面试题60 按行打印二叉树
 
-思路：
-按行打印二叉树需要利用队列先进先出的特点然后设置两个辅助变量，toBePrinted记录当前没有被打印的结点，nextLevel记录下一层需要打印的结点。首先将toBePrinted设置成1，nextLevel记录下来，然后判断父节点的叶子节点是否为空，不为空将其加入队列中，然后nextLevel+1。当该层需要打印的结点为0时，然后令toBePrinted=nextLevel，并且将nextLevel置为0。然后继续上述操作。
+思路：按行打印二叉树需要利用队列先进先出的特点然后设置两个辅助变量，toBePrinted记录当前没有被打印的结点，nextLevel记录下一层需要打印的结点。首先将toBePrinted设置成1，nextLevel记录下来，然后判断父节点的叶子节点是否为空，不为空将其加入队列中，然后nextLevel+1。当该层需要打印的结点为0时，然后令toBePrinted=nextLevel，并且将nextLevel置为0。然后继续上述操作。
 
 ## 面试题61 按之字形顺序打印二叉树
 
@@ -252,7 +435,9 @@ f(n)=$\sum_{i=1}^{n-1}f(i)+1=2^{n-1}$
 
 思路一：直接采用暴力求解，将滑动窗口从头到尾滑动，然后求出每一次滑动时滑动窗口中包含的最大值。
 
-思路二：采用双端队列求解问题
+思路二：采用双端队列求解问题。
+
+
 
 ## 面试题66 矩阵中的路径
 

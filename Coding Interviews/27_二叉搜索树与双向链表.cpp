@@ -29,6 +29,7 @@ TreeNode* Convert(TreeNode* pRootOfTree)
     TreeNode *pLastNodeinList=NULL;
     ConvertNode(pRootOfTree,&pLastNodeinList);
     TreeNode *pHeadofList=pLastNodeinList;
+    //将指针移到表头
     while(pHeadofList!=NULL&&pHeadofList->left!=NULL)
         pHeadofList=pHeadofList->left;
     return pHeadofList;

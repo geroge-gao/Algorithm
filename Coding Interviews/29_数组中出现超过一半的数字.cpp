@@ -1,4 +1,4 @@
-int Partition(int *A,int low,int high)
+密码int Partition(int *A,int low,int high)
 {
     int t=A[low];
     while(low<high)
@@ -40,7 +40,7 @@ int MoreThanHalfNum(int *numbers,int length)
     if(CheckInvalidArray(numbers,length))
         return 0;
 
-    //除法的效率更高
+    //比除法的效率更高
     int middle=length>>1;
     int start=0;
     int end=length-1;

@@ -28,8 +28,6 @@ vector<int> FindNumbersWithSum(vector<int> data,int sum)
     return num;
 }
 
-
-
 //和为s的连续正序列
 void GetSeq(vector<vector<int> > &res,int start,int end)
 {
