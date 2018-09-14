@@ -1,4 +1,4 @@
-密码int Partition(int *A,int low,int high)
+int Partition(int *A,int low,int high)
 {
     int t=A[low];
     while(low<high)
