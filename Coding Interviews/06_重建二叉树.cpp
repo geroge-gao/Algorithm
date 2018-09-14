@@ -1,4 +1,15 @@
-TreeNode* reConstructBinaryTree(vector<int> pre,vector<int> vin) {
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* reConstructBinaryTree(vector<int> pre,vector<int> vin) {
 
         int in_size = vin.size(); 
         if(in_size == 0) 
@@ -26,3 +37,4 @@ TreeNode* reConstructBinaryTree(vector<int> pre,vector<int> vin) {
         node->right = reConstructBinaryTree(pre_right, in_right); 
         return node;        
     }
+};
