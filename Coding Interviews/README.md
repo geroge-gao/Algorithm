@@ -53,7 +53,8 @@
         return rotateArray[p2];                    
     }
 
-    
+
+​    
 
 
 ## 面试题9 斐波那契数列
@@ -95,7 +96,7 @@ f(n)=$\sum_{i=1}^{n-1}f(i)+1=2^{n-1}$
 用$2\times1$的的矩阵覆盖$2\times8$的种类
 
 其实这也是一个斐波拉契数列。
- 
+
 先拼2 * 1和 2 * 2，再在此基础上拼凑。
 
 所以递推公式为f(n)=f(n-1)+f(n-1)
@@ -141,7 +142,7 @@ f(n)=$\sum_{i=1}^{n-1}f(i)+1=2^{n-1}$
     int left=0,right=n-1,top=0,bottom=m-1;
     if(m==0||n==0)
         return b;
-
+    
     while(left<=right&&top<=bottom)
     {
         for(int i=left;i<=right;i++)//从上面开始赋值
@@ -239,7 +240,7 @@ f(n)=$\sum_{i=1}^{n-1}f(i)+1=2^{n-1}$
 
 动态规划：根据最大序列的特点，第一个序列肯定大于等于0。如果连续序列和小于0，那么说明前面一段可以放弃。形式化公式如下：
 
-f(i)=data[i]; //f(i-1)<=0或者i=0
+$$f(i)=data[i]; //f(i-1)<=0或者i=0$$
 f(i)=f(i-1)+data[i]//i!=0或者f(i-1)>0
 
 ## 面试题32 整数中出现1的次数
@@ -260,19 +261,19 @@ f(i)=f(i-1)+data[i]//i!=0或者f(i-1)>0
     int *pMultiply2=pUglyNumbers;
     int *pMultiply3=pUglyNumbers;
     int *pMultiply5=pUglyNumbers;
-
+    
     while(nextUglyIndex<index)
     {
         int min = Min(*pMultiply2*2,*pMultiply3*3,*pMultiply5*5);
         pUglyNumbers[nextUglyIndex]=min;
-
+    
         while(*pMultiply2*2<=pUglyNumbers[nextUglyIndex])
             ++pMultiply2;
         while(*pMultiply3*3<=pUglyNumbers[nextUglyIndex])
             ++pMultiply3;
         while(*pMultiply5*5<=pUglyNumbers[nextUglyIndex])
             ++pMultiply5;
-
+    
         ++nextUglyIndex;
     }
 
@@ -297,22 +298,22 @@ f(i)=f(i-1)+data[i]//i!=0或者f(i-1)>0
         rdepth = TreeDepth(pRoot->right)+1;
         return ldepth > rdepth?ldepth:rdepth;    
     }
-
+    
     /*
     判断是否为平衡二叉树，平衡二叉树要求每一个结点的高度差不超过1
     */
-
+    
     bool IsBalanced(TreeNode *pRoot)
     {
         if(pRoot==NULL)
             return true;
-
+    
         int left=TreeDepth(pRoot->left);
         int right=TreeDepth(pRoot->right);
         int diff=left-right;
         if(diff>1||diff<-1)
             return false;
-
+    
         return IsBalanced(pRoot->left)&&IsBalanced(pRoot->right);
     }
 
@@ -332,7 +333,7 @@ f(i)=f(i-1)+data[i]//i!=0或者f(i-1)>0
 
 选择两个指针，分别指向数组头和尾，如果和大于s，尾指针向左移，否则头指针向右移。
 
-## 和为s的序列
+### 和为s的序列
 
 设置两个指针small和big。分别指向第一个位置和第二个位置。如果序列和小于s，big指针向后移，如果大于s，small指针向后移。最后得到序列。
 
@@ -366,7 +367,7 @@ f(i)=f(i-1)+data[i]//i!=0或者f(i-1)>0
             carry=(num1&num2)<<1;//求进位
             num1=sum;
             num2=carry;
-
+    
         }while(num2!=0);
         return num1;
     }
