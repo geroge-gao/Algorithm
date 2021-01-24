@@ -32,6 +32,9 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="1_two_sum.cpp" />
+		<Unit filename="2_two_add.cpp" />
+		<Unit filename="6_最长回文字符串.cpp" />
 		<Unit filename="main.cpp" />
 		<Extensions />
 	</Project>
