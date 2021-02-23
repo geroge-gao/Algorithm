@@ -26,6 +26,14 @@ public:
 
 ## 动态规划
 
+### 背包问题
+
+## 回溯
+
+
+
+
+
 
 
 ## 双指针
@@ -69,7 +77,7 @@ $$
 
 ## 栈
 
-#### [32. 最长有效括号](https://leetcode-cn.com/problems/longest-valid-parentheses/)
+32. 最长有效括号](https://leetcode-cn.com/problems/longest-valid-parentheses/)
 
 给你一个只包含 `'('` 和 `')'` 的字符串，找出最长有效（格式正确且连续）括号子串的长度。
 
@@ -90,8 +98,6 @@ $$
 - 当栈为空的时候，表示前面的括号都是合法的，所以合法长度为i+1
 - 当栈不为空的时候，表示前面存在不合法括号，所以直接用$i- index_{not\;legal}$
 
-## 回溯
-
 
 
 
@@ -100,7 +106,7 @@ $$
 
 1、先序中序，后序遍历二叉树
 
-#### [96. 不同的二叉搜索树](https://leetcode-cn.com/problems/unique-binary-search-trees/)
+[96. 不同的二叉搜索树](https://leetcode-cn.com/problems/unique-binary-search-trees/)
 
 给定一个整数 *n*，求以 1 ... *n* 为节点组成的二叉搜索树有多少种？
 
@@ -156,7 +162,7 @@ def numTrees(self, n):
 
 ## 链表
 
-#### [23. 合并K个升序链表](https://leetcode-cn.com/problems/merge-k-sorted-lists/)
+[23. 合并K个升序链表](https://leetcode-cn.com/problems/merge-k-sorted-lists/)
 
 给你一个链表数组，每个链表都已经按升序排列。
 
@@ -164,7 +170,7 @@ def numTrees(self, n):
 
 
 
-#### 148.[排序链表](https://leetcode-cn.com/problems/sort-list/)
+148.[排序链表](https://leetcode-cn.com/problems/sort-list/)
 
 给你链表的头结点 `head` ，请将其按 **升序** 排列并返回 **排序后的链表** 
 
