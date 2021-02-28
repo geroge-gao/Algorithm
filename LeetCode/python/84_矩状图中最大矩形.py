@@ -19,7 +19,6 @@ class Solution:
                     # 关键点，前面加上一个0，使得首位形式一样
                     cur_width = i - stack[-1] - 1
                     max_area = max(max_area, cur_height * cur_width)
-
                 stack.append(i)
 
         return max_area
