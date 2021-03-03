@@ -1,56 +1,43 @@
-
 class Solution:
-    def exist(self, board, word) -> bool:
-
+    def exist(self, board: List[List[str]], word: str) -> bool:
         m = len(board)
         n = len(board[0])
-        length = len(word)
 
+        visited = [[False] * n for _ in range(m)]
 
-        # 定义一个栈
-        stack = []
-        for i in range(m):
-            for j in range(n):
-                count = 0
-                flag = [([False] * n) for _ in range(m)]
-                if board[i][j] == word[0] and not flag[i][j]:
-                    stack.append((i, j))
-                    flag[i][j] = True
-                    count += 1
-                while stack and count < length:
+        rows = [-1, 0, 1, 0]
+        cols = [0, 1, 0, -1]
 
-                    x, y = stack[-1]
-                    f = False
+        def dfs(x, y, idx):
+            """搜索单词
+            Args:
+                x: 行索引
+                y: 列索引
+                idx: 单词对应的字母索引
+            """
+            if board[x][y] != word[idx]:
+                return False
 
-                    if x - 1 >= 0 and not flag[x-1][y] and board[x-1][y] == word[count]:
-                        stack.append((x-1, y))
-                        flag[x-1][y] = True
-                        count += 1
-                        f = True
+            if idx == len(word) - 1:
+                return True
 
-                    elif x + 1 < m and not flag[x+1][y] and board[x+1][y] == word[count]:
-                        stack.append((x+1, y))
-                        flag[x+1][y] = True
-                        count += 1
-                        f = True
+            # 先标记
+            visited[x][y] = True
 
-                    elif y - 1 >= 0 and not flag[x][y-1] and board[x][y-1] == word[count]:
-                        stack.append((x, y-1))
-                        flag[x][y-1] = True
-                        count += 1
-                        f = True
+            # 找到符合的字母时开始向四个方向扩散搜索
+            for i in range(4):
+                nx = x + rows[i]
+                ny = y + cols[i]
+                if 0 <= nx < m and 0 <= ny < n and not visited[nx][ny] and dfs(nx, ny, idx + 1):
+                    return True
+            # 扩散未搜索对应的字母，释放标记
+            # 继续往其他方位搜索
+            visited[x][y] = False
+            return False
 
-                    elif y + 1 < n and not flag[x][y+1] and board[x][y+1] == word[count]:
-                        stack.append((x, y+1))
-                        flag[x][y+1] = True
-                        count += 1
-                        f = True
-
-                    if not f:
-                        stack.pop()
-                        count -= 1
-
-                if count == length:
+        for x in range(m):
+            for y in range(n):
+                if dfs(x, y, 0):
                     return True
 
         return False

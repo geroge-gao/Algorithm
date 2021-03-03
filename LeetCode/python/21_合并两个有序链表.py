@@ -18,6 +18,5 @@ class Solution:
             node.next = p
         if q is not None:
             node.next = q
-
         return head.next
 
