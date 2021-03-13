@@ -9,7 +9,6 @@ from queue import Queue
 
 class Solution:
     def levelOrder(self, root):
-        stack = []
         res = []
         if root is None:
             return res
@@ -30,7 +29,6 @@ class Solution:
                 if root.right is not None:
                     q.put(root.right)
                 size -= 1
-
             res.append(level)
 
         return res

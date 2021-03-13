@@ -414,8 +414,9 @@ $$
 f[i][j] = f[i-1][j] or f[i][j-2] or f[i-1][j-2]
 $$
 
-
 直接对照代码更容易理解
+
+
 
 递归形式
 
@@ -446,12 +447,6 @@ bool isMatch(char* str, char* pattern)
         return false;
     return matchCore(str,pattern);
 }
-~~~
-
-动态规划
-
-~~~python
-import pandas as pd
 ~~~
 
 
