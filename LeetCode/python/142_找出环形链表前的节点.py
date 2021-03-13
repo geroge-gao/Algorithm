@@ -35,6 +35,7 @@ class Solution:
             return None
 
         # index = 0
+        point_fast = head
         while point_fast != point_slow:
             point_fast = point_fast.next
             point_slow = point_slow.next

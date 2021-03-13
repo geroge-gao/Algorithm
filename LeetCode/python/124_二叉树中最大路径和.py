@@ -31,7 +31,6 @@ class Solution:
         if cur > self.max_distance:
             self.max_distance = cur
 
-
         # 返回的结果是二叉树深度中的一点
         return root.val + max(left, right)
 
