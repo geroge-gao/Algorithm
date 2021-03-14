@@ -4,7 +4,7 @@ class Solution:
         if len(matrix) == 0 or len(matrix[0]) == 0:
             return 0
 
-        maxSide = 0
+        max_len = 0
         row, col = len(matrix), len(matrix[0])
 
         dp = [[0] * col for _ in range(row)]
@@ -15,8 +15,8 @@ class Solution:
                         dp[i][j] = 1
                     else:
                         dp[i][j] = min(dp[i][j-1], dp[i-1][j-1], dp[i-1][j]) + 1
-                    maxSide = max(dp[i][j], maxSide)
+                    max_len = max(dp[i][j], max_len)
 
-        maxSquare = maxSide * maxSide
+        max_square = max_len * max_len
 
-        return maxSquare
+        return max_square

@@ -1,9 +1,5 @@
 LeetCode常见题型及对应解法
 
-[TOC]
-
-
-
 ## 技巧类
 
 矩阵数据旋转
@@ -1461,6 +1457,62 @@ class Solution:
 
 
 
+[221. 最大正方形](https://leetcode-cn.com/problems/maximal-square/)
+
+难度中等701收藏分享切换为英文接收动态反馈
+
+在一个由 `'0'` 和 `'1'` 组成的二维矩阵内，找到只包含 `'1'` 的最大正方形，并返回其面积。
+
+ 
+
+**示例 1：**
+
+![img](https://assets.leetcode.com/uploads/2020/11/26/max1grid.jpg)
+
+```
+输入：matrix = [["1","0","1","0","0"],["1","0","1","1","1"],["1","1","1","1","1"],["1","0","0","1","0"]]
+输出：4
+```
+
+思路：构建状态矩阵，$dp[i][j]$表示以$(i,j)$为右下角且只包含1的正方形边长最大值。
+
+对于每个位置$(i,j)$，如果该位置的值为0，则$dp[i][j]=0$，因为当前位置不可能出现在1组成的正方形中
+
+如果当前位置是1，状态方程为
+$$
+dp[i][j]=min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1
+$$
+![fig1](https://assets.leetcode-cn.com/solution-static/221/221_fig1.png)
+
+~~~python
+class Solution:
+    def maximalSquare(self, matrix) -> int:
+
+        if len(matrix) == 0 or len(matrix[0]) == 0:
+            return 0
+
+        max_len = 0
+        row, col = len(matrix), len(matrix[0])
+
+        dp = [[0] * col for _ in range(row)]
+        for i in range(row):
+            for j in range(col):
+                if matrix[i][j] == '1':
+                    if i == 0 or j == 0:
+                        dp[i][j] = 1
+                    else:
+                        dp[i][j] = min(dp[i][j-1], dp[i-1][j-1], dp[i-1][j]) + 1
+                    max_len = max(dp[i][j], max_len)
+
+        max_square = max_len * max_len
+
+        return max_square
+~~~
+
+
+
+
+
 [139. 单词拆分](https://leetcode-cn.com/problems/word-break/)
 
 给定一个**非空**字符串 *s* 和一个包含**非空**单词的列表 *wordDict*，判定 *s* 是否可以被空格拆分为一个或多个在字典中出现的单词。
@@ -2841,7 +2893,19 @@ class Solution:
 
 思路：单调栈
 
+根据下面的图，我们知道接雨水的时候，其实是由两个边界决定的。因此我们构建一个单调递减的栈stack用于保存当前数组元素的边界。
 
+遍历数组：
+
+- 当栈非空且当前元素大于栈顶元素，弹出栈顶元素left
+- 计算当前元素到栈顶元素的距离$distance= current - stack[-1] -1$
+- 找到界定高度$max\_height = min(height[stack[-1]], height[current]) - height[left]$
+
+- 计算结果$res=max_height * distance$
+
+其实上述过程简单来讲，就是每次弹出站时，按层计算结果。
+
+![image.png](https://pic.leetcode-cn.com/37fccd915f959c2046ffc1ab2b0a1e4d921869337d8d5d4aa218886ab0bf7c8a-image.png)
 
 ~~~python
 class Solution:
@@ -2895,7 +2959,14 @@ class Solution:
 输出: 10
 ```
 
-思路：
+思路：单调栈，和接雨水思路差不多。构建一个单调递增栈。
+
+- 如果栈为空或者当前元素小于栈顶元素，入栈
+- 如果栈不为空，并且当前元素大于栈顶元素，出栈，$cur\_height=nums[stack.pop()]$
+- 当前宽度$cur\_width=i - stack[-1] - 1$
+- 更新面积
+
+
 
 ~~~python
 class Solution:
@@ -2939,6 +3010,8 @@ class Solution:
 ```
 
 思路：和前面两题一样
+
+
 
 ~~~python
 class Solution:
@@ -2988,11 +3061,11 @@ class Solution:
 
 请根据每日 `气温` 列表，重新生成一个列表。对应位置的输出为：要想观测到更高的气温，至少需要等待的天数。如果气温在这之后都不会升高，请在该位置用 `0` 来代替。
 
-例如，给定一个列表 `temperatures = [73, 74, 75, 71, 69, 72, 76, 73]`，你的输出应该是 `[1, 1, 4, 2, 1, 1, 0, 0]`。
+例如，给定一个列表 `temperatures = [73, 74, 75, 71, 69, 72, 76, 73]`，你的输出应该是 [1, 1, 4, 2, 1, 1, 0, 0]。
 
 **提示：**`气温` 列表长度的范围是 `[1, 30000]`。每个气温的值的均为华氏度，都是在 `[30, 100]` 范围内的整数。
 
-
+思路：保存一个递减单调栈，当当前栈元素大于栈顶元素，弹出栈。
 
 ~~~python
 class Solution:
@@ -3468,9 +3541,6 @@ class Codec:
 
         return res
 
-
-
-
     def deserialize(self, data):
         """Decodes your encoded data to tree.
 
@@ -3495,8 +3565,6 @@ class Codec:
                 nums += 1
         return self.root
 ~~~
-
-
 
 
 
@@ -3535,7 +3603,6 @@ class Trie:
         """
         # 创建一个根节点
         self.node = {}
-
 
 
     def insert(self, word: str) -> None:
@@ -3704,9 +3771,31 @@ class Solution:
 输出: [0,1,1]
 ```
 
-思路：	
+思路：转换成二进制后，是形如这样的数字：aa...aa10...00，从右向左数有任意多个0，直到遇见第一个1，字母a用来占位，代表1左边的任意数字。
 
+x-1转换成二进制后，是形如这样的数字：aa...aa01...11，从右向左数，原来的任意多个0都变成1，原来的第一个1，变成0，字母a部分不变。
 
+对x 和 x-1 进行 按位与 计算，会得到：aa...aa00...00，从右向左数，原来的第一个1变成了0，字母a部分不变。
+
+所以 x & (x-1)相当于消除了 x 从右向左数遇到的第一个1。
+
+~~~python
+class Solution:
+    """位运算"""
+
+    def countBits(self, num: int):        
+        int count_bit(x):
+            count = 0
+            while x:
+                count += 1
+            	x &= x-1
+
+        res = [count_bit(x) for x in range(0, num+1)]
+
+        return res
+~~~
+
+进阶版:
 
 ~~~python
 class Solution:
@@ -3770,58 +3859,6 @@ class Solution:
 
 
 
-## 链表
-
-### 
-
-~~~
-2. 两数相加（链表）
-给你两个 非空 的链表，表示两个非负的整数。它们每位数字都是按照 逆序 的方式存储的，并且每个节点只能存储 一位 数字。
-
-请你将两个数相加，并以相同形式返回一个表示和的链表。
-
-你可以假设除了数字 0 之外，这两个数都不会以 0 开头。
-~~~
-
-思路：链表相加，简单题目
-
-### 链表合并
-
-[21. 合并两个有序链表](https://leetcode-cn.com/problems/merge-two-sorted-lists/)
-
-将两个升序链表合并为一个新的 **升序** 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。 
-
-~~~python
-输入：l1 = [1,2,4], l2 = [1,3,4]
-输出：[1,1,2,3,4,4]
-~~~
-
-
-
-[23. 合并K个升序链表](https://leetcode-cn.com/problems/merge-k-sorted-lists/)
-
-给你一个链表数组，每个链表都已经按升序排列。
-
-请你将所有链表合并到一个升序链表中，返回合并后的链表。
-
-
-
-### 链表排序
-
-148.[排序链表](https://leetcode-cn.com/problems/sort-list/)
-
-给你链表的头结点 `head` ，请将其按 **升序** 排列并返回 **排序后的链表** 
-
-
-
-### 链表相交
-
-160.找到两个链表相交点
-
-
-
-
-
 ## 查找算法
 
 ### 二分查找
@@ -3839,6 +3876,39 @@ class Solution:
 ```
 
 思路一：将两个序列进行合并，类似链表的操作方式，然后找到中位数。
+
+~~~python
+class Solution:
+    def findMedianSortedArrays(self, nums1, nums2):
+        nums = []
+        len1 = len(nums1)
+        len2 = len(nums2)
+        i = 0
+        j = 0
+        while i < len1 and j < len2:
+            if nums1[i] < nums2[j]:
+                nums.append(nums1[i])
+                i += 1
+            else:
+                nums.append(nums2[j])
+                j += 1
+
+        if i < len1:
+            nums += nums1[i: len1]
+        elif j < len2:
+            nums += nums2[j: len2]
+
+        nums_size = len(nums)
+        middle_index = int(nums_size/2)
+        if nums_size == 0:
+            return []
+        elif nums_size % 2 == 0:
+            return (nums[middle_index - 1] + nums[middle_index]) / 2
+        else:
+            return nums[middle_index]
+~~~
+
+
 
 思路二：二分查找。暂时没看懂
 
@@ -3877,7 +3947,72 @@ class Solution:
         return -1
 ~~~
 
+148.[排序链表](https://leetcode-cn.com/problems/sort-list/)
 
+给你链表的头结点 `head` ，请将其按 **升序** 排列并返回 **排序后的链表** 
+
+思路：归并排序
+
+~~~python
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    """
+    方法一：冒泡排序 时间复杂度O(n2)
+    方法二：归并排序
+    """
+
+    def sortList(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+        slow = head
+        fast = head
+        # 用快慢指针分成两部分
+        while fast.next and fast.next.next:
+            slow = slow.next
+            fast = fast.next.next
+        # 找到左右部分, 把左部分最后置空
+        mid = slow.next
+        slow.next = None
+        # 递归下去
+        left = self.sortList(head)
+        right = self.sortList(mid)
+        # 合并
+        return self.merge(left, right)
+
+    def merge(self, left, right):
+        dummy = ListNode(0)
+        p = dummy
+        l = left
+        r = right
+
+        while l and r:
+            if l.val < r.val:
+                p.next = l
+                l = l.next
+                p = p.next
+            else:
+                p.next = r
+                r = r.next
+                p = p.next
+        if l:
+            p.next = l
+        if r:
+            p.next = r
+        return dummy.next
+~~~
+
+
+
+### 哈希表法
+
+
+
+### 分块查找
 
 
 
@@ -3885,7 +4020,27 @@ class Solution:
 
 ### 拓扑排序
 
-  本质是有向图是否存在环，拓扑排序问题
+[207. 课程表](https://leetcode-cn.com/problems/course-schedule/)
+
+你这个学期必须选修 `numCourses` 门课程，记为 `0` 到 `numCourses - 1` 。
+
+在选修某些课程之前需要一些先修课程。 先修课程按数组 `prerequisites` 给出，其中 `prerequisites[i] = [ai, bi]` ，表示如果要学习课程 `ai` 则 **必须** 先学习课程 `bi` 。
+
+- 例如，先修课程对 `[0, 1]` 表示：想要学习课程 `0` ，你需要先完成课程 `1` 。
+
+请你判断是否可能完成所有课程的学习？如果可以，返回 `true` ；否则，返回 `false` 。
+
+**示例 1：**
+
+```
+输入：numCourses = 2, prerequisites = [[1,0]]
+输出：true
+解释：总共有 2 门课程。学习课程 1 之前，你需要完成课程 0 。这是可能的。
+```
+
+  思路：
+
+本质是有向图是否存在环，拓扑排序问题
 
   1、首先找到度入度为0的的点
 
@@ -4164,9 +4319,87 @@ class LRUCache(collections.OrderedDict):
 1. 输出结果为递增序列（递增是针对所需的排序顺序而言）
 2. 输出结果是原输入的一种[排列](https://zh.wikipedia.org/wiki/排列)、或是重组
 
+![image.png](https://pic.leetcode-cn.com/1615436114-fkGCEG-image.png)
+
 ### 归并排序
 
+~~~python
+void Merge(int *a,int s,int m,int n)
+{
+	int temp[20];
+	int i=s,q=s;
+	int j=m+1;
+	while(i<=m&&j<=n)
+	{
+		if(a[i]<a[j])
+			temp[q++]=a[i++];
+		else
+			temp[q++]=a[j++];
+	}
+
+	while(i<=m)
+		temp[q++]=a[i++];
+	while(j<=n)
+		temp[q++]=a[j++];
+	for(int k=s;k<=n;k++)
+		a[k]=temp[k];
+}
+
+void MSort(int *a,int s,int t)
+{
+    int m;
+    if(s==t)
+        return;
+    else
+    {
+        m=(s+t)/2;
+        MSort(a,s,m);
+        MSort(a,m+1,t);
+        Merge(a,s,m,t);
+    }
+}
+~~~
+
+
+
+
+
 ### 快速排序
+
+~~~C++
+int Partition(SqList &L,int low,int high)//最后返回的位置为枢轴的位置
+{
+    RedType t;
+    L.r[0]=L.r[low];//设置枢轴
+    while(low<high)
+    {
+        while(L.r[high].key>=L.r[0].key&&low<high)
+            high--;
+        L.r[low]=L.r[high];
+        while(L.r[low].key<L.r[0].key&&low<high)
+            low++;
+        L.r[high]=L.r[low];
+    }
+    L.r[low]=L.r[0];
+    return low;
+}
+
+void Qsort(SqList &L,int low,int high)
+{
+    int i;
+    if(low<high)
+    {
+        i=Partition(L,low,high);
+        Qsort(L,low,i-1);
+        Qsort(L,i+1,high);
+        count++;
+        printf("第%d趟排序:",count);
+        Print(L);
+    }
+}
+~~~
+
+
 
 
 
@@ -4186,6 +4419,44 @@ class LRUCache(collections.OrderedDict):
 ### 冒泡排序
 
 ### 堆排序
+
+大根堆：父节点的值大于子节点的值。
+
+小根堆：父节点的值小于子节点值。
+
+23. [合并K个升序链表](https://leetcode-cn.com/problems/merge-k-sorted-lists/)
+
+给你一个链表数组，每个链表都已经按升序排列。
+
+请你将所有链表合并到一个升序链表中，返回合并后的链表。
+
+思路一：利用堆排序
+
+构建一个小根堆，将元素一次插入其中，然后将链表一次放入其中。
+
+然后一次将链表弹出，最后得到的就是有序的链表。
+
+思路二：将链表结果放到数组里面，然后利用快排。
+
+~~~python
+class Solution(object):
+    def mergeKLists(self, lists):
+        import heapq
+        head = point = ListNode(0)
+        heap = []
+        for l in lists:
+            while l:
+                heapq.heappush(heap, l.val)
+                l = l.next
+        while heap:
+            val = heappop(heap)
+            point.next = ListNode(val)
+            point = point.next
+        point.next = None
+        return head.next
+~~~
+
+
 
 ### 桶排序
 
