@@ -1,14 +1,20 @@
 class Solution:
-    def maxProfit(self, prices):
-        max_profit = 0
+    """
+    两个数组，最大值和最小值
+    """
+    def maxProduct(self, nums):
+        n = len(nums)
+        max_res = [1] * (n+1)
+        min_res = [1] * (n+1)
 
-        min_price = prices[0]
+        for i in range(1, n+1):
+            max_res[i] = max(max_res[i-1] * nums[i-1], min_res[i-1] * nums[i-1], nums[i-1])
+            min_res[i] = min(max_res[i-1] * nums[i-1], min_res[i-1] * nums[i-1], nums[i-1])
 
-        for i in range(len(prices)):
-            if prices[i] < min_price:
-                min_price = prices[i]
+        return max(max_res[1:])
 
-            if prices[i] - min_price > max_profit:
-                max_profit = prices[i] - min_price
 
-        return max_profit
+if __name__ == '__main__':
+    data = [2, 3, -2, 4]
+    res = Solution().maxProduct(data)
+    print(res)

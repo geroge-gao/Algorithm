@@ -112,7 +112,7 @@ class Solution:
 
 **示例:**
 
-```
+```python
 输入: ["eat", "tea", "tan", "ate", "nat", "bat"]
 输出:
 [
@@ -526,7 +526,7 @@ class Solution:
 
 ​	由于模式里面第一个不可能是'*'。判断的时候我们只需要从左往右判断就行。
 
-​	如果p的第二字字符是*，则需要判断第一个字符是否能匹配上，如果能匹配上。则，模式有三种：
+ 
 
 - 字符串向下移动，但是p不变。
 
@@ -550,7 +550,6 @@ $$
 $$
 f[i][j]=f[i-1][j-1]
 $$
-
 
 3、当p的第j个字符为'*'，可以匹配前面一个字符0次或者无数次。
 
@@ -959,7 +958,8 @@ $$
 进阶：剑指offer超级爬楼梯
 $$
 f[0]=1\\f[1]=1\\f[2]=2\\
-f(n) = \sum_{i=1}^n f(i)
+f(n) = \sum_{i=1}^n f(i)\\
+f(n) = 2f(n-1)
 $$
 [55. 跳跃游戏](https://leetcode-cn.com/problems/jump-game/)
 
@@ -1222,13 +1222,72 @@ class Solution:
         return max_profit
 ~~~
 
+[188. 买卖股票的最佳时机 IV](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/)
 
+难度困难480收藏分享切换为英文接收动态反馈
+
+给定一个整数数组 `prices` ，它的第 `i` 个元素 `prices[i]` 是一支给定的股票在第 `i` 天的价格。
+
+设计一个算法来计算你所能获取的最大利润。你最多可以完成 **k** 笔交易。
+
+**注意：**你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+
+ 
+
+**示例 1：**
+
+```
+输入：k = 2, prices = [2,4,1]
+输出：2
+解释：在第 1 天 (股票价格 = 2) 的时候买入，在第 2 天 (股票价格 = 4) 的时候卖出，这笔交易所能获得利润 = 4-2 = 2 。
+```
+
+**示例 2：**
+
+```
+输入：k = 2, prices = [3,2,6,5,0,3]
+输出：7
+解释：在第 2 天 (股票价格 = 2) 的时候买入，在第 3 天 (股票价格 = 6) 的时候卖出, 这笔交易所能获得利润 = 6-2 = 4 。
+     随后，在第 5 天 (股票价格 = 0) 的时候买入，在第 6 天 (股票价格 = 3) 的时候卖出, 这笔交易所能获得利润 = 3-0 = 3 。
+```
+
+思路：
+
+
+
+~~~python
+class Solution:
+    def maxProfit(self, k: int, prices: List[int]) -> int:
+        if not prices:
+            return 0
+
+        n = len(prices)
+        k = min(k, n // 2)
+        # buy 表示当前手上有股票
+        buy = [[0] * (k + 1) for _ in range(n)]
+        # sell 表示当前无股票
+        sell = [[0] * (k + 1) for _ in range(n)]
+
+        buy[0][0], sell[0][0] = -prices[0], 0
+        for i in range(1, k + 1):
+            buy[0][i] = sell[0][i] = float("-inf")
+
+        for i in range(1, n):
+            buy[i][0] = max(buy[i - 1][0], sell[i - 1][0] - prices[i])
+            for j in range(1, k + 1):
+                # 买入卖出算一次交易
+                buy[i][j] = max(buy[i - 1][j], sell[i - 1][j] - prices[i])
+                sell[i][j] = max(sell[i - 1][j], buy[i - 1][j - 1] + prices[i]);  
+
+        return max(sell[n - 1])
+
+~~~
 
 [309. 最佳买卖股票时机含冷冻期](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/)
 
 难度中等698收藏分享切换为英文接收动态反馈
 
-给定一个整数数组，其中第 *i* 个元素代表了第 *i* 天的股票价格 。
+给定一个整数数组，其中第 i个元素代表了第 i天的股票价格 。
 
 设计一个算法计算出最大利润。在满足以下约束条件下，你可以尽可能地完成更多的交易（多次买卖一支股票）:
 
@@ -1305,9 +1364,9 @@ class Solution:
         return max(f[n-1][1], f[n-1][2])
 ~~~
 
-相似题目：
 
-[188. 买卖股票的最佳时机 IV](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/)
+
+
 
 ### 小偷问题
 
@@ -1351,6 +1410,34 @@ class Solution:
 你是一个专业的小偷，计划偷窃沿街的房屋，每间房内都藏有一定的现金。这个地方所有的房屋都 **围成一圈** ，这意味着第一个房屋和最后一个房屋是紧挨着的。同时，相邻的房屋装有相互连通的防盗系统，**如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警** 。
 
 给定一个代表每个房屋存放金额的非负整数数组，计算你 **在不触动警报装置的情况下** ，能够偷窃到的最高金额。
+
+思路：由于首尾相连，所以只能[1, n-1]或者[2, n]之前求最大值
+
+~~~python
+class Solution(object):
+    def rob(self, nums):
+        N = len(nums)
+        if not nums:
+            return 0
+        if N == 1:
+            return nums[0]
+        return max(self.rob1(nums[0:N - 1]), self.rob1(nums[1:N]))
+    
+    def rob1(self, nums):
+        N = len(nums)
+        if not nums:
+            return 0
+        if N == 1:
+            return nums[0]
+        dp = [0] * N
+        dp[0] = nums[0]
+        dp[1] = max(nums[0], nums[1])
+        for i in range(2, N):
+            dp[i] = max(dp[i - 2] + nums[i], dp[i - 1])
+        return dp[-1]
+~~~
+
+
 
  **示例 1：**
 
@@ -1783,25 +1870,25 @@ candidates 中的数字可以无限制重复被选取。
 
 ~~~python
 class Solution:
-    def __init__(self):
-        self.res_all = []
-
-    def dfs(self, candiates, res, target):
-
-        if sum(res) == target:
-            self.res_all.append(res)
-            return
-        elif sum(res) > target:
-            return
-
-        for i in range(len(candiates)):
-            self.dfs(candiates[i:], res + [candiates[i]], target)
 
     def combinationSum(self, candidates, target):
 
-        self.dfs(candidates,[], target)
+        res_all = []
+        
+        def dfs(candiates, res, target):
+            nonlocal res_all
+            if sum(res) == target:
+                res_all.append(res)
+                return
+            elif sum(res) > target:
+                return
 
-        return self.res_all
+            for i in range(len(candiates)):
+                dfs(candiates[i:], res + [candiates[i]], target)
+
+        dfs(candidates,[], target)
+
+        return res_all
 ~~~
 
 ### 排列问题
@@ -1966,6 +2053,8 @@ class Solution:
 解释：图中垂直线代表输入数组 [1,8,6,2,5,4,8,3,7]。在此情况下，容器能够容纳水（表示为蓝色部分）的最大值为 49。
 https://leetcode-cn.com/problems/container-with-most-water/
 ~~~
+
+![img](https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com/aliyun-lc-upload/uploads/2018/07/25/question_11.jpg)****
 
 思路：这是一道典型的双指针题目，题目意思是利用从数组中选择两个位置，当做挡板，看中间能够容纳多少水。所以思路很简单，建立一个双指针，从左右往中间移动，每次移动左右指针中值较小的那个，每次更新的时候判断面积是否大于最大面积，如果大于，就更新。
 
@@ -2297,6 +2386,7 @@ class Solution:
         ans = 0
         n = len(s)
         for i in range(2*n):
+            
             l = int(i/2)
             r = l + i %2
             while l >= 0 and r < n and s[l] == s[r]:
@@ -2427,7 +2517,7 @@ class Solution:
 
 
 
-### 滑动窗口
+### 滑动窗口 
 
 ​	滑动窗口问题算是双指针的一种变形
 
@@ -2473,7 +2563,7 @@ class Solution:
 
 239.滑动窗口最大值
 
-~~~
+~~~python
 	 给你一个整数数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。
 
 返回滑动窗口中的最大值。
@@ -2489,7 +2579,6 @@ class Solution:
  1  3  -1 [-3  5  3] 6  7       5
  1  3  -1  -3 [5  3  6] 7       6
  1  3  -1  -3  5 [3  6  7]      7
-
 ~~~
 
 思路：
@@ -2592,7 +2681,7 @@ class Solution:
 
 **示例 1：**
 
-```
+```python
 输入：nums = [1,3,-1,-3,5,3,6,7], k = 3
 输出：[3,3,5,5,6,7]
 解释：
@@ -2831,7 +2920,7 @@ class Solution:
 
 ### 单调栈
 
-32. 最长有效括号](https://leetcode-cn.com/problems/longest-valid-parentheses/)
+32. [最长有效括号](https://leetcode-cn.com/problems/longest-valid-parentheses/)
 
 给你一个只包含 `'('` 和 `')'` 的字符串，找出最长有效（格式正确且连续）括号子串的长度。
 
@@ -2897,7 +2986,7 @@ class Solution:
 
 遍历数组：
 
-- 当栈非空且当前元素大于栈顶元素，弹出栈顶元素left
+- 当栈非空且当前元素大于栈顶元素，弹出栈顶元素$left$
 - 计算当前元素到栈顶元素的距离$distance= current - stack[-1] -1$
 - 找到界定高度$max\_height = min(height[stack[-1]], height[current]) - height[left]$
 
@@ -2959,7 +3048,7 @@ class Solution:
 输出: 10
 ```
 
-思路：单调栈，和接雨水思路差不多。构建一个单调递增栈。
+思路：单调栈，和接雨水思路差不多。构建一个单调递递增。
 
 - 如果栈为空或者当前元素小于栈顶元素，入栈
 - 如果栈不为空，并且当前元素大于栈顶元素，出栈，$cur\_height=nums[stack.pop()]$
@@ -2985,7 +3074,7 @@ class Solution:
                 stack.append(i)
             else:
                 # 采用单调栈保存最后的结果
-                while stack and heights[stack[-1]] > heights[i]:
+                while stack and heights[i] < heights[stack[-1]]:
                     cur_height = heights[stack.pop()]
                     # 关键点，前面加上一个0，使得首位形式一样
                     cur_width = i - stack[-1] - 1
@@ -3010,8 +3099,6 @@ class Solution:
 ```
 
 思路：和前面两题一样
-
-
 
 ~~~python
 class Solution:
@@ -3299,21 +3386,29 @@ def inorderTraversal(root_node):
 3、后续遍历
 
 ~~~python
-def postorderTraversal(root_node):
-    if not root_node:
-        return
-    stack1 = [root_node]
-    stack2 = []
-    while stack1:
-        # 在这个 while 循环里面找到后序遍历的逆序，存在在 stack2 中
-        node = stack1.pop()
-        if node.left:
-            stack1.append(node.left)
-        if node.right:
-            stack1.append(node.right)
-        stack2.append(node)
-    while stack2:
-        print stack2.pop().val
+class Solution:
+    def postorderTraversal(self, root: TreeNode) -> List[int]:
+        if not root:
+            return []
+        
+        res = []
+        stack = []
+        prev = None
+
+        while root or stack:
+            while root:
+                stack.append(root)
+                root = root.left
+            root = stack.pop()
+            if not root.right or root.right == prev:
+                res.append(root.val)
+                prev = root
+                root = None
+            else:
+                stack.append(root)
+                root = root.right
+        
+        return res
 ~~~
 
 4、层序遍历
@@ -3325,7 +3420,7 @@ def postorderTraversal(root_node):
 **示例：**
 二叉树：`[3,9,20,null,null,15,7]`,
 
-```
+```python
     3
    / \
   9  20
@@ -3383,6 +3478,29 @@ class Solution:
 
 6、二叉树的宽度
 
+~~~python
+class Solution:
+    def widthOfBinaryTree(self, root: TreeNode) -> int:
+        # bfs，队列中记录每个节点的root，pos，按层更新max_width
+        if not root:
+            return 0
+        max_width = 0
+        queue = [(root, 0)]
+        while queue:
+            width = queue[-1][1] - queue[0][1] + 1
+            if max_width < width:
+                max_width = width
+            for _ in range(len(queue)):
+                node, pos = queue.pop(0)
+                if node.left:
+                    queue.append((node.left, pos*2))
+                if node.right:
+                    queue.append((node.right, pos*2+1))
+        return max_width
+~~~
+
+
+
 [543. 二叉树的直径](https://leetcode-cn.com/problems/diameter-of-binary-tree/)
 
 给定一棵二叉树，你需要计算它的直径长度。一棵二叉树的直径长度是任意两个结点路径长度中的最大值。这条路径可能穿过也可能不穿过根结点。 
@@ -3437,13 +3555,35 @@ class Solution:
         return self.max_depth
 ~~~
 
+7、树的子结构
+
+~~~python
+class Solution:
+    def isSubStructure(self, A: TreeNode, B: TreeNode) -> bool:
+
+        def is_contain(A, B):
+
+            if not B:
+                return True
+
+            if not A or A.val != B.val:
+                return False
+            else:
+                return is_contain(A.left, B.left) and is_contain(A.right, B.right)
+        
+        return bool(A and B) and (is_contain(A, B) or self.isSubStructure(A.left, B) or self.isSubStructure(A.right, B))
+
+~~~
+
+
+
 ### 二叉树公共先祖
 
 [236. 二叉树的最近公共祖先](https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/)
 
 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
 
-[百度百科](https://baike.baidu.com/item/最近公共祖先/8918834?fr=aladdin)中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（**一个节点也可以是它自己的祖先**）。”
+[百度百科](https://baike.baidu.com/item/最近公共祖先/8918834?fr=aladdin)中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（**一个节点也可以是它自己的祖先**）。
 
  
 
@@ -3457,7 +3597,7 @@ class Solution:
 解释：节点 5 和节点 1 的最近公共祖先是节点 3 。
 ```
 
-
+思路：后续遍历二叉树将二叉树转换成链表，然后将叶子结点的右节点指向父节点。
 
 ~~~python
 class Solution:
@@ -3722,6 +3862,29 @@ def numTrees(self, n):
 输入：[4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]
 输出：[30,36,21,36,35,26,15,null,null,null,33,null,null,null,8]
 ```
+
+~~~python
+class Solution:
+    """
+    二叉树遍历常规题
+    """
+
+    def __init__(self):
+        self.total = 0
+
+    def dfs(self, root):
+
+        if root:
+            self.dfs(root.right)
+            self.total += root.val
+            root.val = self.total
+            self.dfs(root.left)
+
+    def convertBST(self, root):
+
+        self.dfs(root)
+        return root
+~~~
 
 
 

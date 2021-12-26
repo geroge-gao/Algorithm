@@ -1,14 +1,38 @@
+#
 class Solution:
-    def maxProfit(self, prices):
-        max_profit = 0
+    """
+    思路一：排序 + 双指针
+    """
+    def longestConsecutive(self, nums):
 
-        min_price = prices[0]
+        nums = sorted(nums)
+        length = len(nums)
 
-        for i in range(len(prices)):
-            if prices[i] < min_price:
-                min_price = prices[i]
+        if length < 2:
+            return length
 
-            if prices[i] - min_price > max_profit:
-                max_profit = prices[i] - min_price
+        start = 0
+        end = 0
+        cur = 1
+        max_len = 0
+        while cur < length:
+            if nums[end] + 1 == nums[cur] or nums[end] == nums[cur]:
+                end = cur
+            else:
+                end = cur
+                start = end
 
-        return max_profit
+            l = len(set(nums[start:end+1]))
+
+            if l > max_len:
+                max_len = l
+
+            cur += 1
+
+        return max_len
+
+if __name__ == '__main__':
+    data = [1,1,1,1,2,2,3,2,5]
+    res = Solution().longestConsecutive(data)
+    print(res)
+
